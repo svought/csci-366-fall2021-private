@@ -134,6 +134,5 @@ The grading will be mainly based on automated tests.  However, a major component
 
 The grading will break down like so:
 
-* 70% automated tests
-* 20% recorded demo
-* 10% code quality and proper synchronization
+* 85% automated tests
+* 15% code quality
