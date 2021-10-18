@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "game.h"
 
+
 // STEP 9 - Synchronization: the GAME structure will be accessed by both players interacting
 // asynchronously with the server.  Therefore the data must be protected to avoid race conditions.
 // Add the appropriate synchronization needed to ensure a clean battle.
@@ -53,7 +54,15 @@ unsigned long long int xy_to_bitval(int x, int y) {
     //
     // you will need to use bitwise operators and some math to produce the right
     // value.
-    return 1ull;
+
+    unsigned long long value;
+
+    if ((x < 0) || (x > 7) || (y < 0) || (y >7))
+        value = 0;
+    else
+        value = 1ull << (x + (y * 8));
+
+    return value;
 }
 
 struct game * game_get_current() {
