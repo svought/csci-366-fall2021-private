@@ -83,6 +83,8 @@ int game_load_board(struct game *game, int player, char * spec) {
     //
     // if it is invalid, you should return -1
 
+    if(spec == NULL) { return -1; } // spec cannot be null
+
     //spec must have 15 characters
     if(strlen(spec) != 15 ){return -1;}
 
@@ -104,7 +106,7 @@ int game_load_board(struct game *game, int player, char * spec) {
         int rowInt = (int) (row - '0');
 
 
-        printf("\n--START--\n%c - ship\n%d - col\n%d - row\n--End--\n", *current, colInt, rowInt);
+//        printf("\n--START--\n%c - ship\n%d - col\n%d - row\n--End--\n", *current, colInt, rowInt);
 
         if ((carrier == false) && (*current == 'C' || *current == 'c')){         //Carrier - 5 spaces
             carrier = true;
@@ -166,41 +168,45 @@ int add_ship_horizontal(player_info *player, int x, int y, int length) {
     // returns 1 if the ship can be added, -1 if not
     // hint: this can be defined recursively
 
-//    if(length == 0){return 1;} //return 1 if length is 0
+    //Base case
+    if(length == 0){return 1;} //return 1 if length is 0
 
     //check that x, y are on board between 0 and 7
     if(x<0 || x>7 || y<0 || y>7) { //(x,y) is off board
         return -1;
     }
-    else {
-        //check if there is already a ship at position x, y
-        unsigned long long int mask = xy_to_bitval(x, y);
 
+    //check if there is already a ship at position x, y
+    unsigned long long int mask = xy_to_bitval(x, y);
 
+    if(player->ships & mask) {return -1;}
 
+    //flip the players ships bit to 1
+    player->ships = player->ships | mask;
 
-//        if (player->ships != mask){
-//            printf("\n--START--\n%llu\n%llu\n--END--\nNot same\n", player->ships, mask);
-//
-//
-//        }
-
-
-        //flip the players ships bit to 1
-
-
-
-        //recursivly call this method, decrease length until 0, and change x,y to all points of ship correct...checking for off board is already done
-        //return last call and base case is 0 (return 1)
-        //check for overlapping ships also
-
-
-        return 1;
-    }
+    //recursive call
+    return add_ship_horizontal(player, x+1, y, length-1); // Does the ship get added going right on board from start position? x+1?
 }
 
 int add_ship_vertical(player_info *player, int x, int y, int length) {
     // implement this as part of Step 2
     // returns 1 if the ship can be added, -1 if not
     // hint: this can be defined recursively
+
+    //Base case
+    if(length == 0){return 1;} //return 1 if length is 0
+
+    //check that x, y are on board between 0 and 7
+    if(x<0 || x>7 || y<0 || y>7) { return -1; } // x, y is off board
+
+    //check if there is already a ship at position x, y
+    unsigned long long int mask = xy_to_bitval(x, y);
+
+    if(player->ships & mask) {return -1;}
+
+    //flip the players ships bit to 1
+    player->ships = player->ships | mask;
+
+    //recursive call
+    return add_ship_vertical(player, x, y+1, length-1); // Does the ship get added going up or down on board from start position? y+1 or y-1?
 }
