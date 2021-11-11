@@ -41,6 +41,33 @@ int game_fire(game *game, int player, int x, int y) {
     //
     //  If the opponents ships value is 0, they have no remaining ships, and you should set the game state to
     //  PLAYER_1_WINS or PLAYER_2_WINS depending on who won.
+
+    unsigned long long int mask = xy_to_bitval(x, y);
+
+    if(mask == 0) {return 0;} //if x,y position off board, missed shot
+
+    player_info *playerFiring = &game->players[player];
+    player_info *playerFiredAt = &game->players[(player==0)?1:0];  //if player is 0, use player 1 info and vice versa
+
+
+    playerFiring->shots = playerFiring->shots | mask;
+
+    if(playerFiredAt->ships & mask) {
+
+        playerFiredAt->ships = playerFiredAt->ships | mask;
+        playerFiring->hits = playerFiring->hits | mask;
+
+        //if playerFiredAt has no remaining ships on the board, playerFiring Wins. Otherwise, change player turn
+        if(playerFiredAt->ships == 1){
+            game->status = (player==0)?PLAYER_0_WINS:PLAYER_1_WINS; //if player is 0, player 0 wins and vice versa
+        } else {
+            game->status = (player==0)?PLAYER_1_TURN:PLAYER_0_TURN; //if player is 0, now player 1's turn and vice versa
+        }
+
+        return 1;
+    }
+
+    return 0;
 }
 
 unsigned long long int xy_to_bitval(int x, int y) {
@@ -75,12 +102,11 @@ int game_load_board(struct game *game, int player, char * spec) {
     // string that represents a layout of ships, then testing
     // to see if it is a valid layout (no off-the-board positions
     // and no overlapping ships)
-    //
 
     // if it is valid, you should write the corresponding unsigned
     // long long value into the Game->players[player].ships data
     // slot and return 1
-    //
+
     // if it is invalid, you should return -1
 
     if(spec == NULL) { return -1; } // spec cannot be null
@@ -105,10 +131,7 @@ int game_load_board(struct game *game, int player, char * spec) {
         int colInt = (int) (col - '0');
         int rowInt = (int) (row - '0');
 
-
-//        printf("\n--START--\n%c - ship\n%d - col\n%d - row\n--End--\n", *current, colInt, rowInt);
-
-        if ((carrier == false) && (*current == 'C' || *current == 'c')){         //Carrier - 5 spaces
+        if ((carrier == false) && (*current == 'C' || *current == 'c')){           //Carrier - 5 spaces
             carrier = true;
             if (*current == 'C') {
                 if(add_ship_horizontal(playerInfo, colInt, rowInt, 5) == -1) {return -1;}
@@ -158,6 +181,11 @@ int game_load_board(struct game *game, int player, char * spec) {
         }
 
         current += 3;
+    }
+
+    player_info *opponent = &game->players[(player==0)?1:0];
+    if(opponent->ships != 0){
+        game->status = PLAYER_0_TURN;
     }
 
     return 1;
