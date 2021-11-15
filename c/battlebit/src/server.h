@@ -6,6 +6,7 @@
 #define BATTLESHIP_SERVER_H
 
 #include "char_buff.h"
+#include "pthread.h"
 
 #define BATTLEBIT_PORT 9876
 
