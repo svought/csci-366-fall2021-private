@@ -1,6 +1,2 @@
-.idea
+/.idea/
 /c/battlebit/cmake-build-debug/
-/cloud/.idea/
-/cloud/target/
-/cloud/ArchiveCat.iml
-/cloud/archives/
