@@ -4,7 +4,7 @@ We are going to be deploying our application to [heroku](https://heroku.com), a 
 
 To do so, you will need to follow these steps:
 
-## Step 1 : Create a Heroku Acocunt
+## Step 1 : Create a Heroku Account
 
 Please sign up for a heroku account and install the heroku command line tools.  You may use whatever 
 email you'd like to sign up.
