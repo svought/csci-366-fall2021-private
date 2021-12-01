@@ -4,6 +4,7 @@ extern "C" {
 #include "game.h"
 #include "helper.h"
 }
+//test commit
 
 TEST(game_fire,empty_game){
     game_init();

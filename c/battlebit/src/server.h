@@ -20,6 +20,4 @@ int server_start();
 
 void server_broadcast(char_buff *msg);
 
-struct game_server *server_create();
-
 #endif //BATTLESHIP_SERVER_H

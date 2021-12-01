@@ -105,6 +105,46 @@ void repl_print_ships(player_info *player_info, char_buff *buffer) {
     //  for the console.  You will need to use bit masking for each position
     //  to determine if a ship is at the position or not.  If it is present
     //  you need to print an X.  If not, you need to print a space character ' '
+
+//===============================================================================================
+// Setting up format
+//===============================================================================================
+
+    cb_append(buffer, "  ");
+
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 8; x++) {
+            if(y==0){
+                cb_append_int(buffer, x);
+                cb_append(buffer, " ");
+            }
+
+            if(x==8 && y>0){
+                cb_append(buffer, " ");
+            }
+
+            if(y>0) {
+                unsigned long long int mask = xy_to_bitval(x, y-1);
+
+                if(player_info->ships & mask){
+                    cb_append(buffer, "* ");
+                } else {
+                    cb_append(buffer, "  ");
+                }
+            }
+
+            if(x==7 && y<8) {
+                cb_append(buffer, "\n");
+                cb_append_int(buffer, y);
+                cb_append(buffer, " ");
+            }
+
+            if(y==8 && x==7){
+                cb_append(buffer, "\n");
+            }
+        } // end of inner loop
+    } // end of outer loop
+
 }
 
 void repl_print_hits(struct player_info *player_info, struct char_buff *buffer) {
@@ -114,4 +154,46 @@ void repl_print_hits(struct player_info *player_info, struct char_buff *buffer) 
     // hits and shots values in the players game struct.  If a shot was fired at
     // a given spot and it was a hit, print 'H', if it was a miss, print 'M'.  If
     // no shot was taken at a position, print a space character ' '
+
+    //===============================================================================================
+// Setting up format
+//===============================================================================================
+
+    cb_append(buffer, "  ");
+
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 8; x++) {
+            if(y==0){
+                cb_append_int(buffer, x);
+                cb_append(buffer, " ");
+            }
+
+            if(x==8 && y>0){
+                cb_append(buffer, " ");
+            }
+
+            if(y>0) {
+                unsigned long long int mask = xy_to_bitval(x, y-1);
+
+                if(player_info->hits & mask){
+                    cb_append(buffer, "H ");
+                } else if (player_info->shots & mask) {
+                    cb_append(buffer, "M ");
+                } else {
+                    cb_append(buffer, "  ");
+                }
+            }
+
+            if(x==7 && y<8) {
+                cb_append(buffer, "\n");
+                cb_append_int(buffer, y);
+                cb_append(buffer, " ");
+            }
+
+            if(y==8 && x==7){
+                cb_append(buffer, "\n");
+            }
+        } // end of inner loop
+    } // end of outer loop
+
 }
